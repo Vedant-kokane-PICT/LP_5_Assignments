@@ -21,13 +21,19 @@ void bubbleSort(vector<int> &arr){
 void bubbleSortParallel(vector<int> &arr){
     int n = arr.size();
     for(int i=0;i<n;i++){
-        #pragma omp parallel for 
-        for(int j=i+1;j<n;j++){
-            if(arr[i] > arr[j]){
-                #pragma omp  critical
-                {
-                    swap(arr[i], arr[j]);
-                }
+        // odd
+        #pragma omp parallel for
+        for(int j=1;j<n-1;j=j+2){
+            if(arr[j] > arr[j+1]){
+                swap(arr[j],arr[j+1]);
+            }
+        }
+        
+        // even
+        #pragma omp parallel for
+        for(int j=0;j<n-1;j=j+2){
+            if(arr[j] > arr[j+1]){
+                swap(arr[j],arr[j+1]);
             }
         }
     }
