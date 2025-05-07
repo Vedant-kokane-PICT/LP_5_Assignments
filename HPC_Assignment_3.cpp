@@ -1,44 +1,64 @@
-#include <iostream>
+#include <bits/stdc++.h>
 #include <omp.h>
-#include <vector>
-#include <climits>
+
 using namespace std;
 
 
+void minOperation(vector<int> arr){
+    int minValue = arr[0];
+    double start = omp_get_wtime();
+    #pragma omp parallel reduction(min:minValue)
+    for(int i=0;i<arr.size();i++){
+        minValue = min(minValue,arr[i]);
+    }
+    double end = omp_get_wtime();
+    cout<<"Min - "<<minValue<<", time taken - "<<end-start<<endl;
+    
+}
 
-void helper(vector<int> &arr){
-    int n = arr.size();
-    int minElement = INT_MAX;
-    int maxElement = INT_MIN;
+
+void maxOperation(vector<int> arr){
+    int maxValue = arr[0];
+    double start = omp_get_wtime();
+    #pragma omp parallel reduction(max:maxValue)
+    for(int i=0;i<arr.size();i++){
+        maxValue = max(maxValue,arr[i]);
+    }
+    double end = omp_get_wtime();
+    cout<<"Max - "<<maxValue<<", time taken - "<<end-start<<endl;
+    
+}
+
+void sumOperation(vector<int> arr){
     int sum = 0;
-    double avg = 0.0;
-    double startTime = omp_get_wtime();
-    #pragma omp parallel for reduction(min:minElement) reduction(max:maxElement) reduction(+:sum)
-    for(int i=0;i<n;i++){
-        if(arr[i] < minElement){
-            minElement = arr[i];
-        }
-        if(arr[i] > maxElement){
-            maxElement = arr[i];
-        }
-        
+    double start = omp_get_wtime();
+    #pragma omp parallel reduction(+:sum)
+    for(int i=0;i<arr.size();i++){
         sum += arr[i];
     }
-    double endTime = omp_get_wtime();
-    cout<<"Start - "<<startTime<<", End - "<<endTime<<endl;
-    cout<<"Difference - "<<endTime - startTime<<endl;
-    avg = (double) sum / (double) n;
-    cout<<"Min - "<<minElement<<endl;
-    cout<<"Max - "<<maxElement<<endl;
-    cout<<"Sum - "<<sum<<endl;
-    cout<<"Avg - "<<avg<<endl;
-    
+    double end = omp_get_wtime();
+    cout<<"Sum - "<<sum<<", time taken - "<<end-start<<endl;
+}
+
+
+void averageOperation(vector<int> arr){
+    int sum = 0;
+    double start = omp_get_wtime();
+    #pragma omp parallel reduction(+:sum)
+    for(int i=0;i<arr.size();i++){
+        sum += arr[i];
+    }
+    double end = omp_get_wtime();
+    double avg = (double) (sum) / (double)(arr.size());
+    cout<<"Average - "<<avg<<", time taken - "<<end-start<<endl;
 }
 
 int main()
 {
-   
-    vector<int> arr = {1,2,3,4,5};
-    helper(arr);
+    vector<int> arr = {5, 33, 4, 1, 2, 3, 9};
+    minOperation(arr);
+    maxOperation(arr);
+    sumOperation(arr);
+    averageOperation(arr);
     return 0;
 }
